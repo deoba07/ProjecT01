@@ -1,0 +1,13 @@
+
+Username: deoba
+Email:adekunlefemi64@gmail.com
+Password: ubrvui
+Address: lagos
+State of Origin: ogun state
+DOB: 2007-06-23
+Phone: 08023268806
+Gender: Male
+Country: Nigeria
+Marital Status: Single
+Position: SOftware engineer
+-----------------------------------

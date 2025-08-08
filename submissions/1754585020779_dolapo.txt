@@ -1,0 +1,13 @@
+
+Username: dolapo
+Email:dolapoadekunle60@gmail.com
+Password: ;rbgvuiut
+Address: Arepo
+sor: ogun state
+DOB: 2000-07-27
+Phone: 08050756596
+Gender: Female
+Country: Nigeria
+Marital Status: Single
+Position: IT analyst
+-----------------------------------

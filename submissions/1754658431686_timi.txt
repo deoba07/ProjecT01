@@ -1,0 +1,13 @@
+
+Username: timi
+Email:timiadetimiehin@gmail.com
+Password: tuclutcltu
+Address: opic
+sor: ogun state
+DOB: 2008-06-23
+Phone: 08050756596
+Gender: Male
+Country: Nigeria
+Marital Status: Single
+Position: SOftware engineer
+-----------------------------------
