@@ -213,7 +213,7 @@ button:hover{
 
 
 @media  screen and (max-width: 600px){
-      form{
+      form img{ 
         width: 100%;
       }
     }
