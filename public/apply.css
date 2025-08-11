@@ -144,6 +144,7 @@ button:hover{
 
 .page-wrapper {
   display: flex;
+  flex-wrap: row;
   justify-content: flex-start;
   align-items: stretch;
   min-height: 100vh;
@@ -208,12 +209,30 @@ button:hover{
 
 
 
-
-
-
-
-@media  screen and (max-width: 600px){
-      form img{ 
-        width: 100%;
-      }
+/* Tablets */
+@media (max-width: 768px) {
+    .page-wrapper {
+        flex-direction: column;
+        align-items: center;
     }
+    .formbox,
+    .image-container{
+        max-width: 100%;
+        margin: 0;
+    }
+}
+
+/* Phones */
+@media (max-width: 480px) {
+    h1, h4 {
+        font-size: 1rem;
+    }
+    .buttonGroup {
+        flex-direction: column;
+    }
+    .buttonGroup button {
+        
+        width: 100%;
+    }
+}
+
