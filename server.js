@@ -1,11 +1,19 @@
+require('dotenv').config(); // ✅ Load environment variables from .env
+
+
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
-
+const { Pool } = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// ✅ PostgreSQL connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -18,50 +26,42 @@ app.get('/', (req, res) => {
 });
 
 // Handle form submission
-app.post('/submit', (req, res) => {
-  const { username,email, password, address, sor, dob, tel, gender, country, Status, position } = req.body;
+app.post('/submit', async (req, res) => {
+  const { username, email, password, address, sor, dob, tel, gender, country, Status, position } = req.body;
 
-  if (!username ||!email || !address || !tel || !gender || !country || !position) {
+  if (!username || !email || !address || !tel || !gender || !country || !position) {
     return res.status(400).send('Missing required fields');
   }
 
-  // Save to file
-  const folderPath = path.join(__dirname, 'submissions');
-  if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath);
-
-  const fileName = `${Date.now()}_${username.replace(/\s+/g, '_')}.txt`;
-  const filePath = path.join(folderPath, fileName);
-  const fileContent = `
-Username: ${username}
-Email:${email}
-Password: ${password}
-Address: ${address}
-sor: ${sor}
-DOB: ${dob}
-Phone: ${tel}
-Gender: ${gender}
-Country: ${country}
-Marital Status: ${Status}
-Position: ${position}
------------------------------------
-`;
-
-  fs.writeFileSync(filePath, fileContent);
+  try {
+    // ✅ Save to PostgreSQL
+    await pool.query(
+      `INSERT INTO submissions
+      (username, email, password, address, sor, dob, tel, gender, country, status, position)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [username, email, password, address, sor, dob, tel, gender, country, Status, position]
+    );
+    console.log("Submission saved to PostgreSQL");
+  } catch (err) {
+    console.error("Database error:", err);
+    return res.status(500).send("Error saving submission");
+  }
 
   // Send email
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'blessingw317@gmail.com', // replace
-      pass: 'nmvb tyiy rpli kuuf' // Gmail app password
-    }
+  user: process.env.EMAIL_USER,
+  pass: process.env.EMAIL_PASS
+}
+
   });
 
   const mailOptions = {
-  from: 'consultingbordtech@gmail.com', // ✅ Company's email (sender)
-  to: email, // ✅ Get this from the form submission
-  subject: 'Your Application Has Been Received',
-  text: `Dear ${username},
+    from: 'consultingbordtech@gmail.com',
+    to: email,
+    subject: 'Your Application Has Been Received',
+    text: `Dear ${username},
 
 Thank you for applying to ConsultingBord Tech Groups.
 
@@ -70,13 +70,12 @@ Our team will review your submission and get back to you shortly.
 
 Best regards,  
 ConsultingBord Tech Groups`
-};
-
+  };
 
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
       console.error('Email error:', err);
-      return res.status(500).json({success:false,message:'Email failed to send'});
+      return res.status(500).json({ success: false, message: 'Email failed to send' });
     }
     console.log('Email sent:', info.response);
     res.json({ success: true, message: 'Application submitted successfully!' });
