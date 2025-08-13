@@ -1,7 +1,7 @@
 const reset=document.getElementById("reset");
 const submit=document.getElementById("submit");
 const togglePassword = document.getElementById("togglePassword");
-const passwordInput=document.getElementById("password");
+const passwordInput=document.getElementById("Password");
 
   const Username=document.getElementById("Username");
   const email=document.getElementById("email");
