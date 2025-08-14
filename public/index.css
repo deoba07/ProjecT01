@@ -44,8 +44,9 @@ nav{
     padding: 15px 0;
     min-height: 30px;
     position: sticky;
-    top: 90px;
+    top: 79.9px;
     z-index: 1000;
+    margin-top: 0;
 }
 nav ul{
     display: flex;
@@ -377,10 +378,12 @@ form{
     padding-top: 80px;
   }
 
+
  
   form {
     padding: 20px !important;
   }
+ 
 
   
   nav ul {
