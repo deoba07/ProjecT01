@@ -361,6 +361,7 @@ form{
   .service-card{
     max-width: 350px;
     width: 100%;
+    text-align: center;
   }
  
   .text-section,
@@ -451,5 +452,5 @@ form{
     scroll-padding-top: 200px;
   }
 }
-  
+ 
 
