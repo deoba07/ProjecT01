@@ -1,4 +1,4 @@
-
+ 
 body{
     background-color:#F2F4F8;
     margin: 0;
@@ -422,7 +422,7 @@ form{
     height: 40px;
   }
 
-  
+
   .logo-title{
     flex-direction: row; /* instead of column */
     align-items: center;

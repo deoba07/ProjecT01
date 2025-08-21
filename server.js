@@ -90,6 +90,86 @@ app.get('/submissions', async (req, res) => {
   }
 });
 
+
+
+
+
+// Backup all submissions
+app.get('/backup', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM submissions ORDER BY id ASC');
+    res.json({ submissions: result.rows });
+  } catch (err) {
+    console.error('Error backing up submissions:', err);
+    res.status(500).json({ error: 'Failed to backup submissions' });
+  }
+});
+
+
+// Restore submissions (auto-create table if not exists)
+app.post('/restore', async (req, res) => {
+  const { submissions } = req.body;
+
+  if (!submissions || !Array.isArray(submissions)) {
+    return res.status(400).json({ error: 'Invalid backup data format' });
+  }
+
+  try {
+    // 1. Create table if it doesn't exist
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS submissions (
+        id SERIAL PRIMARY KEY,
+        username TEXT,
+        email TEXT,
+        password TEXT,
+        address TEXT,
+        sor TEXT,
+        dob TEXT,
+        tel TEXT,
+        gender TEXT,
+        country TEXT,
+        status TEXT,
+        position TEXT
+      );
+    `);
+
+    // 2. Clear existing data
+    await pool.query('DELETE FROM submissions');
+
+    // 3. Reinsert data from backup (let SERIAL auto-generate IDs)
+    for (const sub of submissions) {
+      await pool.query(
+        `INSERT INTO submissions
+         (username, email, password, address, sor, dob, tel, gender, country, status, position)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        [
+          sub.username,
+          sub.email,
+          sub.password,
+          sub.address,
+          sub.sor,
+          sub.dob,
+          sub.tel,
+          sub.gender,
+          sub.country,
+          sub.status,
+          sub.position
+        ]
+      );
+    }
+
+    // ✅ Success response
+    res.json({ message: 'Submissions table recreated and data restored successfully!' });
+
+  } catch (err) {
+    console.error('Error restoring submissions:', err);
+    res.status(500).json({ error: 'Failed to restore submissions' });
+  }
+});
+
+
+
+
 // Start server once
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
